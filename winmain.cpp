@@ -24,6 +24,7 @@
 #include <mferror.h>
 #include <shobjidl.h>   // defines IFileOpenDialog
 #include <strsafe.h>
+#include <sstream>
 
 #include "resource.h"
 
@@ -37,7 +38,7 @@
     "language='*'\"")
 
 
-BOOL    InitializeWindow(HWND *pHwnd);
+BOOL    InitializeWindow(HWND *pHwnd, PWSTR pwszFilePath);
 HRESULT PlayMediaFile(HWND hwnd, const WCHAR *sURL);
 void    ShowErrorMessage(PCWSTR format, HRESULT hr);
 
@@ -114,6 +115,15 @@ public:
 };
 
 
+// convert LPWSTR to LPSTR
+LPSTR LPWSTRToLPSTR(LPWSTR lpwstr) {
+    int size = WideCharToMultiByte(CP_UTF8, 0, lpwstr, -1, NULL, 0, NULL, NULL);
+    LPSTR lpstr = new char[size];
+    WideCharToMultiByte(CP_UTF8, 0, lpwstr, -1, lpstr, size, NULL, NULL);
+    return lpstr;
+}
+
+
 // Global variables
 
 IMFPMediaPlayer         *g_pPlayer = NULL;      // The MFPlay player object.
@@ -123,7 +133,7 @@ BOOL                    g_bHasVideo = FALSE;
 
 /////////////////////////////////////////////////////////////////////
 
-INT WINAPI wWinMain(HINSTANCE,HINSTANCE,LPWSTR,INT)
+INT WINAPI wWinMain(HINSTANCE,HINSTANCE,LPWSTR lpCmdLine,INT)
 {
     (void)HeapSetInformation(NULL, HeapEnableTerminationOnCorruption, NULL, 0);
 
@@ -135,7 +145,7 @@ INT WINAPI wWinMain(HINSTANCE,HINSTANCE,LPWSTR,INT)
         return 0;
     }
 
-    if (!InitializeWindow(&hwnd))
+    if (!InitializeWindow(&hwnd, lpCmdLine))
     {
         return 0;
     }
@@ -164,7 +174,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     switch (uMsg)
     {
-        //HANDLE_MSG(hwnd, WM_CLOSE,   OnClose);
+        HANDLE_MSG(hwnd, WM_CLOSE,   OnClose);
         //HANDLE_MSG(hwnd, WM_KEYDOWN, OnKeyDown);
         HANDLE_MSG(hwnd, WM_PAINT,   OnPaint);
         //HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
@@ -185,7 +195,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 // Creates the main application window.
 //-------------------------------------------------------------------
 
-BOOL InitializeWindow(HWND *pHwnd)
+BOOL InitializeWindow(HWND *pHwnd, PWSTR pwszFilePath)
 {
     WNDCLASS wc = {0};
 
@@ -225,7 +235,7 @@ BOOL InitializeWindow(HWND *pHwnd)
 
     *pHwnd = hwnd;
 
-    startPlayer(hwnd, L"E:/projector/Code/utils/timestampe.mp4");
+    startPlayer(hwnd, pwszFilePath);
 
     return TRUE;
 }
