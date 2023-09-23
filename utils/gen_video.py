@@ -1,6 +1,7 @@
 import numpy as np
 import cv2 as cv
 import argparse
+import os
 
 def get_arucos(tag_num: int, tag_size: int, white=False):
     assert tag_size > 0
@@ -47,6 +48,7 @@ if __name__ == "__main__":
     width = args.width
     height = args.height
 
+    os.makedirs(save_root, exist_ok=True)
 
     fourcc = cv.VideoWriter_fourcc(*'H264')    
     out = cv.VideoWriter(f'{save_root}/patterns_video.mp4', fourcc, 240.0, (width, height), True)
