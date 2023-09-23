@@ -21,7 +21,7 @@ def get_arucos(tag_num: int, tag_size: int, white=False):
             white_width = white_batch // 8
             markerImage = np.ones((white_batch, white_batch), dtype=np.uint8)*255
             markerImage[white_width:tag_size+white_width, white_width:tag_size+white_width] = \
-                cv.aruco.generateImageMarker(dictionary, 0, tag_size, markerImage, 1)
+                cv.aruco.generateImageMarker(dictionary, i, tag_size, markerImage, 1)
             markerImage = markerImage.reshape((white_batch,white_batch,1))
             markerImage = np.tile(markerImage, (1,1,3))
             _aruco_collector.append(markerImage)
