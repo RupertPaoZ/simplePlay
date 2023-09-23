@@ -67,7 +67,7 @@ if __name__ == "__main__":
     up = height - white_batch
     left = [0, width-white_batch]
 
-    # gen patterns calibrate
+    # pos calibration
     for i in range(tag_num):
         frame = np.zeros((height, width, 3), dtype=np.uint8)
         pattern = cv.imread(f'{pattern_root}/{i}.png', 6)
@@ -75,6 +75,14 @@ if __name__ == "__main__":
         frame[up:up+white_batch, left[i%tag_num]:left[i%tag_num]+white_batch] = aruco_collector[i%tag_num]
         cv.imwrite(f'{save_root}/T_{i}.png', frame)
 
+    # brightness calibration
+    aruco_collector = get_arucos(tag_num, tag_size, white=True)
+    for i in range(tag_num):
+        frame = np.zeros((height, width, 3), dtype=np.uint8)
+        pattern = cv.imread(f'{pattern_root}/{i}.png', 6)
+        h, w, _ = pattern.shape
+        frame[up:up+white_batch, left[i%tag_num]:left[i%tag_num]+white_batch] = aruco_collector[i%tag_num]
+        cv.imwrite(f'{save_root}/white_{i}.png', frame)
     cv.imwrite(f'{save_root}/black.png', np.zeros_like(frame))
 
     # gen video
