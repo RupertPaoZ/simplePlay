@@ -75,6 +75,8 @@ if __name__ == "__main__":
         frame[up:up+white_batch, left[i%tag_num]:left[i%tag_num]+white_batch] = aruco_collector[i%tag_num]
         cv.imwrite(f'{save_root}/T_{i}.png', frame)
 
+    cv.imwrite(f'{save_root}/black.png', np.zeros_like(frame))
+
     # gen video
     aruco_collector = get_arucos(tag_num, tag_size, white=True)
     for _ in range(frame_num):

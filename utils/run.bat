@@ -1,4 +1,4 @@
-set pattern_root="Z:/zneg&bi/9.7patterntest/patterns/test"
+set pattern_root="Y:/zneg&bi/9.7patterntest/patterns/test"
 set save_root="data"
 set pattern_num=10
 set frame_num=10
