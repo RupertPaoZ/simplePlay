@@ -2,7 +2,7 @@ import native_rpc_client as rpc_client
 import time
 
 class _player_controller_template:
-    def __init__(self):
+    def __init__(self, player_path):
         pass
         
     def __enter__(self):
@@ -27,7 +27,7 @@ def remote_player_controller(base_url):
 
 
 if __name__ == "__main__":
-    player_controller = remote_player_controller('http://localhost:5000')
-    myplayer = player_controller('')
-    myplayer.play(video_path='E:/projector/Code/utils/data/patterns_video.mp4')
-    time.sleep(3)
+    player_controller = remote_player_controller('http://localhost:5001')
+    # myplayer = player_controller('')
+    # myplayer.play(video_path='E:/projector/Code/utils/data/patterns_video.mp4')
+    # time.sleep(3)
