@@ -53,19 +53,19 @@ if __name__ == "__main__":
     fourcc = cv.VideoWriter_fourcc(*'H264')    
     out = cv.VideoWriter(f'{save_root}/patterns_video.mp4', fourcc, 240.0, (width, height), True)
 
-    # font format for timestamp
-    font = cv.FONT_HERSHEY_SIMPLEX
-    org = (0, 1024)
-    fontScale = 2
-    color = (255, 255, 255)
-    thickness = 2
-
     # artag
     tag_num = 2
     aruco_collector = get_arucos(tag_num, tag_size, white=False)
     white_batch = aruco_collector[0].shape[0]
     up = height - white_batch
-    left = [0, width-white_batch]
+    left = [256, width-white_batch-256]
+
+    # font format for timestamp
+    font = cv.FONT_HERSHEY_SIMPLEX
+    org = (width//2 - white_batch//2, height - white_batch//4)
+    fontScale = 1
+    color = (255, 255, 255)
+    thickness = 1
 
     # pos calibration
     for i in range(tag_num):
@@ -92,9 +92,12 @@ if __name__ == "__main__":
             frame = np.zeros((height, width, 3), dtype=np.uint8)
             pattern = cv.imread(f'{pattern_root}/{i}.png', 6)
             h, w, _ = pattern.shape
-            frame[:h, :w] = pattern
-            frame[-tag_size:] = 0
-            # frame = cv.putText(frame, f'{i:04}', org, font, fontScale, color, thickness)
+            delta_x0 = (width - w)//2
+            frame[:h, delta_x0:w+delta_x0] = pattern
+            frame[-white_batch:] = 0
             frame[up:up+white_batch, left[i%tag_num]:left[i%tag_num]+white_batch] = aruco_collector[i%tag_num]
+            if i==0:
+                # frame = cv.putText(frame, f'{i}', org, font, fontScale, color, thickness)
+                frame[height-white_batch//4:, width//2-white_batch//8:width//2+white_batch//8] = (255,255,255)
             out.write(frame)
     out.release()
